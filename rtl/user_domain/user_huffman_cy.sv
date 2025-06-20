@@ -42,9 +42,21 @@ module user_huffman #(
   assign we_d = obi_req_i.a.we;
   assign addr_d = obi_req_i.a.addr;
 
-  logic req_int, we_int;
-  logic [ObiCfg.AddrWidth-1:0] addr_int;
-  logic [ObiCfg.IdWidth-1:0] id_int;
+
+  always_ff @(posedge (clk_i) or negedge (rst_ni)) begin
+    if (!rst_ni) begin
+      req_q <= '0;
+      id_q <= '0;
+      we_q <= '0;
+      addr_q <= '0;
+    end else begin
+      req_q <= req_d;
+      id_q <= id_d;
+      we_q <= we_d;
+      addr_q <= addr_d;
+    end
+  end
+
   
   // Comprises 4 main blocks: priority encoder, barrel shifter, LUT, and adder.
 
@@ -57,11 +69,16 @@ module user_huffman #(
 
     assign	DOUT	=	{priencout3, LUTout};	// Basic top-level connectivity
 
-    always @(posedge clk) 					
-    begin
+    always_ff @(posedge (clk_i) or negedge (rst_ni)) begin				
+      if (!rst_ni) begin
+        priencout2	<=	0;
+        priencout3	<=	0;
+        barrelin	<=	0;
+      end else begin 
         priencout2	<=	priencout1;
         priencout3	<=	priencout2;
         barrelin	<=	DIN[22:2];
+      end 
     end
 
 
