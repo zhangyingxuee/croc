@@ -46,6 +46,8 @@ sources:
       - rtl/croc_domain.sv
       - rtl/user_domain.sv
       # add your design files with modules here
+      - rtl/user_domain/user_log.sv
+      - rtl/user_domain/user_rom.sv
       # Level 3
       - rtl/croc_soc.sv
 
